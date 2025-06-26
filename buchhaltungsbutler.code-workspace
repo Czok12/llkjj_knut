@@ -1,0 +1,179 @@
+{
+    "folders": [
+        {
+            "name": "Buchhaltungsbutler",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "python.defaultInterpreterPath": "./.venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "python.analysis.autoImportCompletions": true,
+        "python.analysis.typeCheckingMode": "basic",
+        "django.snippets.enabled": true,
+        "emmet.includeLanguages": {
+            "django-html": "html"
+        },
+        "files.associations": {
+            "**/templates/**/*.html": "django-html"
+        },
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        },
+        "github.copilot.enable": {
+            "*": true,
+            "python": true,
+            "javascript": true,
+            "html": true,
+            "css": true,
+            "django-html": true
+        },
+        "files.exclude": {
+            "**/__pycache__": true,
+            "**/*.pyc": true,
+            "**/node_modules": true,
+            "**/.git": false,
+            "**/.env": false
+        },
+        "search.exclude": {
+            "**/node_modules": true,
+            "**/bower_components": true,
+            "**/*.code-search": true,
+            "**/__pycache__": true,
+            "**/migrations": false
+        },
+        "markdown.validate.enabled": false
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-python.python",
+            "ms-python.vscode-pylance",
+            "ms-python.black-formatter",
+            "charliermarsh.ruff",
+            "batisteo.vscode-django",
+            "github.copilot",
+            "github.copilot-chat",
+            "github.vscode-pull-request-github",
+            "ms-vscode.vscode-json",
+            "bradlc.vscode-tailwindcss",
+            "formulahendry.auto-rename-tag",
+            "ms-vscode.live-server"
+        ]
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Django Server",
+                "type": "debugpy",
+                "request": "launch",
+                "program": "${workspaceFolder}/manage.py",
+                "args": [
+                    "runserver"
+                ],
+                "django": true,
+                "justMyCode": true,
+                "envFile": "${workspaceFolder}/.env"
+            },
+            {
+                "name": "Django Shell",
+                "type": "debugpy",
+                "request": "launch",
+                "program": "${workspaceFolder}/manage.py",
+                "args": [
+                    "shell"
+                ],
+                "django": true,
+                "justMyCode": true,
+                "envFile": "${workspaceFolder}/.env"
+            }
+        ]
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Django Server starten",
+                "type": "shell",
+                "command": "source .venv/bin/activate && python manage.py runserver",
+                "group": "build",
+                "isBackground": true,
+                "problemMatcher": [],
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "new"
+                }
+            },
+            {
+                "label": "Migrations erstellen",
+                "type": "shell",
+                "command": "source .venv/bin/activate && python manage.py makemigrations",
+                "group": "build",
+                "problemMatcher": []
+            },
+            {
+                "label": "Migrations anwenden",
+                "type": "shell",
+                "command": "source .venv/bin/activate && python manage.py migrate",
+                "group": "build",
+                "problemMatcher": []
+            },
+            {
+                "label": "Superuser erstellen",
+                "type": "shell",
+                "command": "source .venv/bin/activate && python manage.py createsuperuser",
+                "group": "build",
+                "problemMatcher": []
+            },
+            {
+                "label": "Django Shell",
+                "type": "shell",
+                "command": "source .venv/bin/activate && python manage.py shell",
+                "group": "build",
+                "problemMatcher": []
+            },
+            {
+                "label": "Code formatieren (black)",
+                "type": "shell",
+                "command": "source .venv/bin/activate && black .",
+                "group": "build",
+                "problemMatcher": []
+            },
+            {
+                "label": "Code prüfen (ruff)",
+                "type": "shell",
+                "command": "source .venv/bin/activate && ruff check .",
+                "group": "build",
+                "problemMatcher": []
+            },
+            {
+                "label": "Type checking (mypy)",
+                "type": "shell",
+                "command": "source .venv/bin/activate && mypy .",
+                "group": "build",
+                "problemMatcher": []
+            },
+            {
+                "label": "Tests ausführen",
+                "type": "shell",
+                "command": "source .venv/bin/activate && python manage.py test",
+                "group": "test",
+                "problemMatcher": []
+            },
+            {
+                "label": "Alle Qualitätsprüfungen",
+                "type": "shell",
+                "command": "source .venv/bin/activate && black . && ruff check . && mypy . && python manage.py test",
+                "group": "build",
+                "problemMatcher": [],
+                "dependsOrder": "sequence"
+            }
+        ]
+    }
+}
