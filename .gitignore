@@ -129,6 +129,7 @@ belege/
 backups/
 exports/
 steuererklaerungen/
+internes/
 *.csv
 *.pdf
 *.xml
