@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     "konten",
     # Tailwind CSS
     "tailwind",
+    "llkjj_buch",  # Tailwind-App
+    "theme",  # Eigene Theme-App
 ]
 
 MIDDLEWARE = [
@@ -153,6 +155,9 @@ STATIC_URL = os.environ.get("STATIC_URL", "/static/")
 STATIC_ROOT = os.environ.get("STATIC_ROOT", str(BASE_DIR / "staticfiles"))
 MEDIA_ROOT = os.environ.get("MEDIA_ROOT", str(BASE_DIR / "media"))
 MEDIA_URL = "/media/"
+
+# Tailwind-Konfiguration
+TAILWIND_APP_NAME = "llkjj_buch"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
