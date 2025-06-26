@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 import environ
@@ -32,7 +33,12 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
+# ALLOWED_HOSTS robust setzen
+ALLOWED_HOSTS = (
+    env.list("ALLOWED_HOSTS")
+    if "ALLOWED_HOSTS" in os.environ
+    else ["localhost", "127.0.0.1"]
+)
 
 
 # Application definition
@@ -44,6 +50,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Eigene Apps
+    "auswertungen",
+    "belege",
+    "buchungen",
+    "konten",
+    # Tailwind CSS
+    "tailwind",
 ]
 
 MIDDLEWARE = [
@@ -56,7 +69,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "buchhaltungsbutler.urls"
+# Korrigiere ROOT_URLCONF und WSGI_APPLICATION
+ROOT_URLCONF = "llkjj_art.urls"
+WSGI_APPLICATION = "llkjj_art.wsgi.application"
 
 TEMPLATES = [
     {
@@ -73,18 +88,36 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "buchhaltungsbutler.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# Datenbank aus .env und os.environ robust
+_db_engine = os.environ.get("DATABASE_ENGINE") or "sqlite3"
+if _db_engine == "postgres":
+    _db_name = os.environ.get("DATABASE_NAME", "postgres")
+    _db_user = os.environ.get("DATABASE_USER", "postgres")
+    _db_password = os.environ.get("DATABASE_PASSWORD", "")
+    _db_host = os.environ.get("DATABASE_HOST", "localhost")
+    _db_port = os.environ.get("DATABASE_PORT", "5432")
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": _db_name,
+            "USER": _db_user,
+            "PASSWORD": _db_password,
+            "HOST": _db_host,
+            "PORT": _db_port,
+        }
     }
-}
+else:
+    _db_name = os.environ.get("DATABASE_NAME", "db.sqlite3")
+    if _db_name and not _db_name.startswith("/"):
+        db_path = str(BASE_DIR / _db_name)
+    else:
+        db_path = _db_name
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": db_path,
+        }
+    }
 
 
 # Password validation
@@ -106,22 +139,20 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
+# Sprache und Zeitzone aus .env
+LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE", "de-de")
+TIME_ZONE = os.environ.get("TIME_ZONE", "Europe/Berlin")
 
 USE_I18N = True
 
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = "static/"
+# Static/Media aus .env
+STATIC_URL = os.environ.get("STATIC_URL", "/static/")
+STATIC_ROOT = os.environ.get("STATIC_ROOT", str(BASE_DIR / "staticfiles"))
+MEDIA_ROOT = os.environ.get("MEDIA_ROOT", str(BASE_DIR / "media"))
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
