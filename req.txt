@@ -1,0 +1,9 @@
+django
+python-dotenv
+pillow
+django-crispy-forms
+crispy-bootstrap5
+black
+ruff
+mypy
+django-stubs
